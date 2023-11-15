@@ -1,0 +1,50 @@
+{{- define "__custom/comparePalette" -}}
+  {{ $attributes := .Attributes }}
+  <div class="m-1 p-4 border-2 rounded-md inline-block">
+    {{ with .data.title }}
+      <div class="font-bold mb-s">{{ . }}</div>
+    {{ end }}
+    {{ with .data.paletteList }}
+      {{ range $palette := . }}
+        <div class="flex">
+          <div
+            class="w-28 h-20 text-xs flex flex-col justify-center items-center gap-1 border-y border-x"
+          >
+            {{ $palette.name }}
+          </div>
+          {{ range $color := $palette.palette }}
+            {{ $textColor := "text-black" }}
+            {{ if $attributes.checkcontrast }}
+              {{ $textColor = "text-gray-200" }}
+              {{ if
+                $color.isLight
+              }}
+                {{ $textColor = "text-black" }}
+              {{ end }}
+            {{ end }}
+            {{ $bgColor := $color.css }}
+            {{ if strings.Contains $bgColor "lch(" }}
+              {{ $bgColor = $color.hex }}
+            {{ end }}
+            <div
+              class="w-28 h-20 border-y text-xs flex flex-col justify-center items-center gap-1 {{ $textColor }}"
+              style="background-color: {{ $bgColor | safeCSS }};"
+            >
+              <div class="font-bold">{{ $color.no }}</div>
+              <div>{{ $color.hex | upper }}</div>
+              {{ if ne $color.css $color.hex }}
+                <div>{{ $color.css }}</div>
+              {{ else }}
+                <div>{{ $color.hex | upper }}</div>
+              {{ end }}
+            </div>
+          {{ end }}
+        </div>
+      {{ end }}
+    {{ end }}
+  </div>
+{{- end -}}
+{{- $data := unmarshal (.Inner | safe.JSStr) -}}
+{{ template
+  "__custom/comparePalette" dict "data" $data "Attributes" .Attributes
+}}

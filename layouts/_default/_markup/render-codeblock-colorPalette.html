@@ -1,0 +1,66 @@
+{{- define "__custom/colorPalette" -}}
+  {{ $debug := .debug }}
+  <div class="m-1 p-2 border-2 rounded-md inline-block">
+    {{ with .data.name }}
+      <div class="font-bold mb-s ml-2">{{ . }}</div>
+    {{ end }}
+    {{ with .data.description }}
+      <div class="txt-body-m mb-s">{{ . }}</div>
+    {{ end }}
+    <div class="flex justify-center gap-0 p-2">
+      {{ with .data.palette }}
+        {{ range $item := . }}
+          <div>
+            {{ $bgColor := $item.css }}
+            {{ if strings.Contains $bgColor "lch(" }}
+              {{ $bgColor = $item.hex }}
+            {{ end }}
+            <div
+              class="w-14 h-14"
+              style="background-color: {{ $bgColor | safeCSS }};"
+            ></div>
+            <div class="w-14 text-center text-xs flex flex-col gap-1">
+              <div class="font-bold">{{ $item.no }}</div>
+              <div>{{ $item.hex | upper }}</div>
+              {{ if ne $item.css $item.hex }}
+                <div>{{ $item.css }}</div>
+              {{ else }}
+                <div>{{ $item.hex | upper }}</div>
+              {{ end }}
+            </div>
+            {{ if and $debug (eq $item.isValidRGB false) }}
+              <div
+                class="w-14 text-center text-xs border-t mt-2 pt-2 text-red-600 font-bold"
+              >
+                <div>補正あり</div>
+                <div>rawRGB</div>
+                {{ with $item.rawRGB }}
+                  <div class="break-all">{{ . }}</div>
+                {{ end }}
+              </div>
+            {{ end }}
+          </div>
+        {{ end }}
+        {{/* {{ $list := unmarshal $colors }} {{ index $list 0 }} */}}
+      {{ end }}
+    </div>
+  </div>
+{{- end -}}
+{{- $data := unmarshal (.Inner | safe.JSStr) -}}
+{{ $debug := false }}
+{{ if eq .Attributes.debug true }}
+  {{ $debug = true }}
+{{ end }}
+{{- if
+  reflect.IsSlice $data
+-}}
+  {{- range $data -}}
+    {{ template
+      "__custom/colorPalette" dict "data" . "debug" $debug
+    }}
+  {{- end -}}
+{{- else -}}
+  {{ template
+    "__custom/colorPalette" dict "data" $data "debug" $debug
+  }}
+{{- end -}}
