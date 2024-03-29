@@ -2,12 +2,14 @@
   {{ $attributes := .Attributes }}
   {{- with $attributes.title -}}
     <div class="text-lg font-bold leading-m tracking-m mb-4 -mx-1">
-      <span class="inline-flex emoji justify-center">
-        {{ with $attributes.icon -}}
-          <span>{{ $attributes.icon }}</span>
-        {{ else }}
-          <span>📄</span>
-        {{ end }}
+      <span class="flex emoji content-center">
+        <span class="mr-1">
+          {{ with $attributes.icon -}}
+            {{ $attributes.icon }}
+          {{ else }}
+            📄
+          {{ end }}
+        </span>
         <span>{{ . }}</span>
       </span>
     </div>
