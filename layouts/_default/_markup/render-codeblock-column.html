@@ -2,7 +2,7 @@
   {{ $attributes := .Attributes }}
   {{- with $attributes.title -}}
     <div class="text-lg font-bold leading-m tracking-m mb-4 -mx-1">
-      <span class="flex emoji content-center">
+      <span class="flex emoji content-start">
         <span class="mr-1">
           {{ with $attributes.icon -}}
             {{ $attributes.icon }}
@@ -10,7 +10,7 @@
             📄
           {{ end }}
         </span>
-        <span>{{ . }}</span>
+        <span class="font-sans">{{ . }}</span>
       </span>
     </div>
   {{- end }}
