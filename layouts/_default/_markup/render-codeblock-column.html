@@ -15,6 +15,6 @@
     </div>
   {{- end }}
   <div class="mx-2 article">
-    {{ .Inner | markdownify }}
+    {{ .Inner | $.Page.RenderString }}
   </div>
 </div>
